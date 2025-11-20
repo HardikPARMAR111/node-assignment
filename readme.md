@@ -80,3 +80,9 @@ Header: Authorization: Bearer <JWT_TOKEN>
 
 GET /users/:id
 Header: Authorization: Bearer <JWT_TOKEN>
+
+/auth/users?search=name or email - for searching by name or email
+GET user?search=name or email
+
+/auth/users?country=countryName -for filter by country
+GET user?country=countryName
