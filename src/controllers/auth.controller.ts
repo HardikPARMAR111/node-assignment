@@ -17,7 +17,12 @@ export class AuthController {
 
   async getAllUsers(req: AuthRequest, res: Response) {
     const loggedInUser = req.user;
-    const result = await authService.getAllUsers(loggedInUser);
+    const filters = {
+      search: req.query.search as string,
+      country: req.query.country as string,
+    };
+
+    const result = await authService.getAllUsers(loggedInUser, filters);
     return res.status(result.success ? 200 : 403).json(result);
   }
 

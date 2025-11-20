@@ -5,6 +5,11 @@ import { RegisterDto } from "../dtos/register.dto";
 import { LoginDto } from "../dtos/login.dto";
 import jwt from "jsonwebtoken";
 import { ObjectId } from "mongodb";
+import { FindOptionsWhere } from "typeorm";
+interface GetUsersFilters {
+  search?: string;
+  country?: string;
+}
 
 export class AuthService {
   private userRepository = AppDataSource.getMongoRepository(User);
@@ -73,20 +78,54 @@ export class AuthService {
   }
 
   // list all users (admin only)
-  async getAllUsers(requestingUser: any) {
+  async getAllUsers(requestingUser: any, filters: GetUsersFilters = {}) {
     if (!requestingUser || requestingUser.role !== "ADMIN") {
       return { success: false, message: "Access denied" };
     }
 
     try {
+      const { search, country } = filters;
+
+      const andConditions: any[] = [];
+
+      // 1. Construct the SEARCH condition ($or: [name, email])
+      if (search) {
+        const regex = new RegExp(search, "i");
+
+        const searchCondition = {
+          $or: [{ name: regex } as any, { email: regex } as any],
+        };
+        andConditions.push(searchCondition);
+      }
+
+      // 2. Construct the FILTER condition (country)
+      if (country) {
+        // Use RegExp for case-insensitive country filtering
+        const countryCondition = { country: new RegExp(country, "i") };
+        andConditions.push(countryCondition);
+      }
+
+      // 3. Assemble the final WHERE object using $and
+      let finalWhere: FindOptionsWhere<User> = {};
+
+      if (andConditions.length > 0) {
+        (finalWhere as any).$and = andConditions;
+      }
+
+      // 4. Execute the find query
       const users = await this.userRepository.find({
-        select: ["_id", "name", "email", "role", "phone", "city", "country"],
+        where: finalWhere,
       });
 
-      // convert _id to string for API response
+      // Format response
       const formattedUsers = users.map((u) => ({
-        ...u,
         id: u._id.toHexString(),
+        name: u.name,
+        email: u.email,
+        role: u.role,
+        phone: u.phone,
+        city: u.city,
+        country: u.country,
       }));
 
       return {
