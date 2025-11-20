@@ -1,4 +1,4 @@
-# MERN Interview Project – User Management API
+c# MERN Interview Project – User Management API
 
 This is a Node.js project built with TypeScript, Express.js, MongoDB, and TypeORM.  
 It provides a simple user management system with authentication, role-based access, and CRUD operations.

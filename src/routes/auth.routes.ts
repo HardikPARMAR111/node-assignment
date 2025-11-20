@@ -17,7 +17,6 @@ router.post("/login", validateDto(LoginDto), authController.login);
 // listing all user route
 router.get("/users", authenticateJWT, authController.getAllUsers);
 
-// list user by id route
 router.get("/users/:id", authenticateJWT, authController.getUserById);
 
 export default router;
