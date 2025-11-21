@@ -38,7 +38,8 @@ It provides a simple user management system with authentication, role-based acce
 ## **Setup environment variables**
 
 - PORT=4000
-- MONGO_URI=mongodb://localhost:27017/your-db-name //replace it with your db **use 127.0.0.1 if localhost is not working in mongo_uri** 
+- MONGO_URI=mongodb://localhost:27017/your-db-name **use 127.0.0.1 if localhost is not working in mongo_uri** 
+- replace it with your db 
 - JWT_SECRET="your_secret_key"
 
 ##**start mongodb(if mongodb is not running)**
@@ -86,4 +87,5 @@ GET user?search=name or email
 
 /auth/users?country=countryName -for filter by country
 GET user?country=countryName
+
 
